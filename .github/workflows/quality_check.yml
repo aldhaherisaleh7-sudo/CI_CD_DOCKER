@@ -22,7 +22,7 @@ jobs:
           run: cp .env.example .env
 
         - name: spin container
-          run: docker compose -f compose.yml -f docker-compose.ci.yml up -d
+          run: docker compose -f docker-compose.ci.yml up -d
 
         - name: generate app key
           run: docker exec application php artisan key:generate
@@ -53,7 +53,7 @@ jobs:
           run: cp .env.example .env
 
         - name: spin container
-          run: docker compose -f compose.yml -f docker-compose.ci.yml up -d
+          run: docker compose -f docker-compose.ci.yml up -d
 
         - name: install dev dependencies
           run: docker exec application composer install --no-interaction --prefer-dist --optimize-autoloader
