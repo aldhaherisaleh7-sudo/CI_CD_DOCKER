@@ -19,7 +19,7 @@ jobs:
           uses: actions/checkout@v4
 
         - name: make env file
-          run: cp .env.example .env.testing
+          run: cp .env.example .env
 
         - name: spin container
           run: docker compose up -d 
@@ -28,8 +28,7 @@ jobs:
           run: docker exec application php artisan key:generate
           
         - name: run test
-          run: docker exec application  php artisan test --env=testing
+          run: docker exec application  php artisan test
 
         - name: run covarge check
-          run:  docker exec application  php artisan test --coverage --env=testing
-     
+          run:  docker exec application  php artisan test --coverage
