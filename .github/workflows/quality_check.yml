@@ -49,6 +49,6 @@ jobs:
 
         - name: install phpstan
           run: docker exec application composer require --dev phpstan/phpstan
-
+    
         - name: static code analysis
-          run: ./vendor/bin/phpstan analyse --l 6 app
+          run: ./vendor/bin/phpstan analyse -l 6 app
