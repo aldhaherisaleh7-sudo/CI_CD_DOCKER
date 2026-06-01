@@ -31,4 +31,24 @@ jobs:
           run: docker exec application  php artisan test
 
         - name: run covarge check
-          run:  docker exec application  php artisan test --coverage
+          run:  docker exec -e XDEBUG_MODE=coverage application php artisan test --coverage
+
+  Static_Analysis: 
+    runs-on: ubuntu-latest
+    needs: Testing
+    
+    steps:
+        - name: checkout
+          uses: actions/checkout@v4
+
+        - name: make env file
+          run: cp .env.example .env
+
+        - name: spin container
+          run: docker compose up -d 
+
+        - name: install phpstan
+          run: docker exec application composer require --dev phpstan/phpstan
+    
+        - name: static code analysis
+          run: docker exec application ./vendor/bin/phpstan analyse -l 6 app
