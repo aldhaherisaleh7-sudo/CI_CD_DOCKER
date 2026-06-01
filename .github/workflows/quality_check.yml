@@ -6,6 +6,9 @@ on:
       - dev
       - main
   workflow_dispatch:
+  push:
+    branches:
+      - main
   
 jobs:
   Testing:
@@ -15,12 +18,17 @@ jobs:
         - name: checkout
           uses: actions/checkout@v4
 
+        - name: make env file
+          run: cp .env.example .env
+
         - name: spin container
           run: docker compose up -d 
+
+        - name: generate app key
+          run: docker exec application php artisan key:generate
           
         - name: run test
-          run: docker exec application  php artisan test 
+          run: docker exec application  php artisan test
 
         - name: run covarge check
           run:  docker exec application  php artisan test --coverage
-     
