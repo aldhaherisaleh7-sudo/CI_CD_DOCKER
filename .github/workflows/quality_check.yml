@@ -31,4 +31,5 @@ jobs:
           run: docker exec application  php artisan test
 
         - name: run covarge check
-          run:  docker exec application  php artisan test --coverage
+          run:  docker exec -e XDEBUG_MODE=coverage application php artisan test --coverage
+
