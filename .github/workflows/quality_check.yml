@@ -18,12 +18,18 @@ jobs:
         - name: checkout
           uses: actions/checkout@v4
 
+        - name: make env file
+          run: cp .env.example .env.testing
+
         - name: spin container
           run: docker compose up -d 
+
+        - name: generate app key
+          run: docker exec application php artisan key:generate
           
         - name: run test
-          run: docker exec application  php artisan test 
+          run: docker exec application  php artisan test --env=testing
 
         - name: run covarge check
-          run:  docker exec application  php artisan test --coverage
+          run:  docker exec application  php artisan test --coverage --env=testing
      
