@@ -22,13 +22,13 @@ jobs:
           run: cp .env.example .env
 
         - name: spin container
-          run: docker compose up -d 
+          run: docker compose -f compose.yml -f docker-compose.ci.yml up -d
 
         - name: generate app key
           run: docker exec application php artisan key:generate
           
         - name: install dev dependencies
-          run: docker exec application composer update && docker exec application composer install
+          run: docker exec application composer install --no-interaction --prefer-dist --optimize-autoloader
           
         - name: run test
           run: docker exec application php artisan test
@@ -53,10 +53,10 @@ jobs:
           run: cp .env.example .env
 
         - name: spin container
-          run: docker compose up -d 
+          run: docker compose -f compose.yml -f docker-compose.ci.yml up -d
 
         - name: install dev dependencies
-          run: docker exec application composer update && docker exec application composer install
+          run: docker exec application composer install --no-interaction --prefer-dist --optimize-autoloader
           
         - name: static code analysis
           run: docker exec application ./vendor/bin/phpstan analyse -l 6 app
