@@ -1,5 +1,8 @@
 services:
   app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       db:
         condition: service_healthy
@@ -10,6 +13,8 @@ services:
       - DB_DATABASE=test
       - DB_USERNAME=saleh
       - DB_PASSWORD=password
+    networks:
+      - app-network
 
   db:
     container_name: mysql
