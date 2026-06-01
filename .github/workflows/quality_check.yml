@@ -27,16 +27,8 @@ jobs:
         - name: generate app key
           run: docker exec application php artisan key:generate
           
-        - name: install dev dependencies
-          run: docker exec application composer install --no-interaction --prefer-dist --optimize-autoloader
-          
         - name: run test
           run: docker exec application php artisan test
-
-        - name: set xdebug
-          run: |
-              docker exec application pecl install xdebug
-              docker exec application docker-php-ext-enable xdebug
             
         - name: run covarge check
           run:  docker exec -e XDEBUG_MODE=coverage application php artisan test --coverage
@@ -54,9 +46,6 @@ jobs:
 
         - name: spin container
           run: docker compose -f docker-compose.ci.yml up -d
-
-        - name: install dev dependencies
-          run: docker exec application composer install --no-interaction --prefer-dist --optimize-autoloader
           
         - name: static code analysis
           run: docker exec application ./vendor/bin/phpstan analyse -l 6 app
