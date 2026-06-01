@@ -6,9 +6,9 @@ on:
       - dev
       - main
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   
 jobs:
   Testing:
