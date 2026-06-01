@@ -6,9 +6,9 @@ on:
       - dev
       - main
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   
 jobs:
   Testing:
@@ -28,15 +28,15 @@ jobs:
           run: docker exec application php artisan key:generate
           
         - name: install dev dependencies
-          run: composer install
+          run: docker exec application composer update && docker exec application composer install
           
         - name: run test
           run: docker exec application php artisan test
-          
-        - name: set x-debug
+
+        - name: set xdebug
           run: |
-            pecl install xdebug \
-            && docker-php-ext-enable xdebug
+              docker exec application pecl install xdebug
+              docker exec application docker-php-ext-enable xdebug
             
         - name: run covarge check
           run:  docker exec -e XDEBUG_MODE=coverage application php artisan test --coverage
@@ -56,7 +56,7 @@ jobs:
           run: docker compose up -d 
 
         - name: install dev dependencies
-          run: composer install
+          run: docker exec application composer update && docker exec application composer install
           
         - name: static code analysis
           run: docker exec application ./vendor/bin/phpstan analyse -l 6 app
