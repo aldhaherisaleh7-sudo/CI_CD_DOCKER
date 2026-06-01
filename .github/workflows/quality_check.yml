@@ -1,0 +1,26 @@
+name: Code Quality
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+  workflow_dispatch:
+  
+jobs:
+  Testing:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: checkout
+          uses: actions/checkout@v4
+
+        - name: spin container
+          run: docker compose up -d 
+          
+        - name: run test
+          run: docker exec application  php artisan test 
+
+        - name: run covarge check
+          run:  docker exec application  php artisan test --coverage
+     
