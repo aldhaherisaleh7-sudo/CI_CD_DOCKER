@@ -17,9 +17,6 @@ RUN docker-php-ext-install \
     bcmath \
     zip
 
-RUN pecl install xdebug \
-    && docker-php-ext-enable xdebug
-
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY composer.json composer.lock ./
