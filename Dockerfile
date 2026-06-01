@@ -22,7 +22,6 @@ COPY composer.json composer.lock ./
 
 RUN composer install \
     --no-interaction \
-    --no-dev \
     --optimize-autoloader
 
 RUN chmod +x ./entry_point.sh
