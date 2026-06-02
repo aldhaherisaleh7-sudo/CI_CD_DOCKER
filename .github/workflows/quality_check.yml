@@ -18,6 +18,14 @@ jobs:
 
       - name: spin container
         run:  docker compose up -d
+        env:
+          DB_CONNECTION: ${{ secrets.QA_DB_CONNECTION }}
+          DB_HOST: ${{ secrets.QA_DB_HOST }}
+          DB_PORT: ${{ secrets.QA_DB_PORT }}
+          DB_DATABASE: ${{ secrets.QA_DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.QA_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.QA_DB_PASSWORD }}
+          NGINX_HOST: ${{ secrets.QA_NGINX_HOST }}
 
       - name: generate app key
         run:  docker exec application php artisan key:generate
