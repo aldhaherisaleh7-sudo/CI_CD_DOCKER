@@ -26,6 +26,9 @@ jobs:
         - name: generate app key
           run:  docker exec application php artisan key:generate
           
+        - name: install dependencies
+          run: docker exec application composer install
+          
         - name: run test
           run:  docker exec application php artisan test
           
