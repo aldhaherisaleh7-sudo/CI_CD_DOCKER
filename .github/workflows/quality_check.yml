@@ -11,41 +11,29 @@ on:
   #     - main
   
 jobs:
-  Testing:
+  QA:
       runs-on: ubuntu-latest
-
       steps:
         - name: checkout
           uses: actions/checkout@v4
-
+          
         - name: make env file
-          run: cp .env.example .env
-
+          run:  cp .env.example .env
+          
         - name: spin container
-          run: docker compose -f docker-compose.ci.yml up -d
-
+          run:  docker compose up -d
+          
         - name: generate app key
-          run: docker exec application php artisan key:generate
+          run:  docker exec application php artisan key:generate
           
         - name: run test
-          run: docker exec application php artisan test
-            
+          run:  docker exec application php artisan test
+          
+        - name: run static analysis
+          run:  docker exec application ./vendor/bin/phpstan analyse -l 6 app
+          
+        - name: install x-debug
+          run:  docker exec application  pecl install xdebug
+          
         - name: run covarge check
           run:  docker exec -e XDEBUG_MODE=coverage application php artisan test --coverage
-
-  Static_Analysis: 
-    runs-on: ubuntu-latest
-    needs: Testing
-    
-    steps:
-        - name: checkout
-          uses: actions/checkout@v4
-
-        - name: make env file
-          run: cp .env.example .env
-
-        - name: spin container
-          run: docker compose -f docker-compose.ci.yml up -d
-          
-        - name: static code analysis
-          run: docker exec application ./vendor/bin/phpstan analyse -l 6 app
