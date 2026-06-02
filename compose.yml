@@ -41,6 +41,7 @@ services:
     image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -P 3306 --protocol=TCP -usaleh -ppassword"]
       interval: 10s
