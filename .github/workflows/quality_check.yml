@@ -14,19 +14,22 @@ jobs:
         uses: actions/checkout@v4
 
       - name: make env file
-        run: cp .env.example .env
+        run:  cp .env.example .env
 
       - name: spin container
-        run: docker compose up -d
+        run:  docker compose up -d
 
       - name: generate app key
-        run: docker exec application php artisan key:generate
-
+        run:  docker exec application php artisan key:generate
+        
+      - name: install dev dependencies
+        run:  docker exec application composer install
+        
       - name: run tests
-        run: docker exec application php artisan test
+        run:  docker exec application php artisan test
 
       - name: run static analysis
-        run: docker exec application ./vendor/bin/phpstan analyse -l 6 app
+        run:  docker exec application ./vendor/bin/phpstan analyse -l 6 app
 
       - name: install and enable xdebug
         run: |
@@ -34,4 +37,4 @@ jobs:
           docker exec application docker-php-ext-enable xdebug
 
       - name: run coverage
-        run: docker exec -e XDEBUG_MODE=coverage application php artisan test --coverage
+        run:  docker exec -e XDEBUG_MODE=coverage application php artisan test --coverage
