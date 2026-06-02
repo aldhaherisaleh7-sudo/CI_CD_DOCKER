@@ -1,51 +1,37 @@
 name: Code Quality
-
 on:
   pull_request:
     branches:
       - dev
       - main
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - main
-  
+
 jobs:
-  Testing:
-      runs-on: ubuntu-latest
-
-      steps:
-        - name: checkout
-          uses: actions/checkout@v4
-
-        - name: make env file
-          run: cp .env.example .env
-
-        - name: spin container
-          run: docker compose -f docker-compose.ci.yml up -d
-
-        - name: generate app key
-          run: docker exec application php artisan key:generate
-          
-        - name: run test
-          run: docker exec application php artisan test
-            
-        - name: run covarge check
-          run:  docker exec -e XDEBUG_MODE=coverage application php artisan test --coverage
-
-  Static_Analysis: 
+  QA:
     runs-on: ubuntu-latest
-    needs: Testing
-    
     steps:
-        - name: checkout
-          uses: actions/checkout@v4
+      - name: checkout
+        uses: actions/checkout@v4
 
-        - name: make env file
-          run: cp .env.example .env
+      - name: make env file
+        run:  cp .env.example .env
 
-        - name: spin container
-          run: docker compose -f docker-compose.ci.yml up -d
-          
-        - name: static code analysis
-          run: docker exec application ./vendor/bin/phpstan analyse -l 6 app
+      - name: spin container
+        run:  docker compose up -d
+
+      - name: generate app key
+        run:  docker exec application php artisan key:generate
+        
+      - name: install dev dependencies
+        run:  docker exec application composer install
+
+      - name: install and enable xdebug
+        run: |
+          docker exec application pecl install xdebug
+          docker exec application docker-php-ext-enable xdebug
+        
+      - name: run tests and coverage
+        run: docker exec -e XDEBUG_MODE=coverage application php artisan test --parallel --coverage
+
+      - name: run static analysis
+        run:  docker exec application ./vendor/bin/phpstan analyse -l 6 app
