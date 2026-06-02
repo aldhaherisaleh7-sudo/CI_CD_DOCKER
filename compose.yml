@@ -1,8 +1,61 @@
 services:
   app:
     container_name: application
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=test
+      - DB_USERNAME=saleh
+      - DB_PASSWORD=password
+    volumes:
+      - public:/my-app/public:rw
+      - storage:/my-app/storage:rw
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    ports:
+      - "9119:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template
+      - public:/my-app/public:ro
+      - storage:/my-app/storage:ro
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+  db:
+    container_name: mysql
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=test
+      - MYSQL_USER=saleh
+      - MYSQL_PASSWORD=password
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -P 3306 --protocol=TCP -usaleh -ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db:/var/lib/mysql
     networks:
       - app-network
 
 networks:
   app-network:
+
+volumes:
+  db:
+  storage:
+  public:
