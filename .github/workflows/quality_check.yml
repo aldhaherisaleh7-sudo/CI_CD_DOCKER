@@ -17,7 +17,7 @@ jobs:
         run:  cp .env.example .env
 
       - name: spin container
-        run:  docker compose up -d
+        run:  docker compose -f docker-compose.ci.yml up -d
         env:
           DB_CONNECTION: ${{ secrets.QA_DB_CONNECTION }}
           DB_HOST: ${{ secrets.QA_DB_HOST }}
