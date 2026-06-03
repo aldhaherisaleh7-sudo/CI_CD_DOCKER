@@ -15,16 +15,16 @@ jobs:
 
       - name: make env file
         run:  cp .env.example .env
-
+        
       - name: spin container
-        run:  docker compose -f docker-compose.ci.yml up -d
+        run: docker compose -f docker-compose.ci.yml up -d
         env:
           DB_CONNECTION: ${{ secrets.QA_DB_CONNECTION }}
           DB_HOST: ${{ secrets.QA_DB_HOST }}
           DB_PORT: ${{ secrets.QA_DB_PORT }}
           DB_DATABASE: ${{ secrets.QA_DB_DATABASE }}
-          DB_USERNAME_ROOT: ${{ secrets.QA_DB_USERNAME_ROOT }}
-          DB_PASSWORD_ROOT: ${{ secrets.QA_DB_PASSWORD_ROOT }}
+          DB_USERNAME_ROOT: ${{ secrets.QA_DB_USERNAME_ROOT }} 
+          DB_PASSWORD_ROOT: ${{ secrets.QA_DB_PASSWORD_ROOT }} 
 
       - name: generate app key
         run:  docker exec application php artisan key:generate
