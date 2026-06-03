@@ -34,7 +34,7 @@ jobs:
 
       - name: build and push image
         run: |
-          docker build -f Dockerfile.prod \
+          docker build \
             -t ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:uat \
             -t ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:${{ steps.pr.outputs.sha }} \
             .
