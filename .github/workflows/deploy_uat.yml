@@ -35,8 +35,8 @@ jobs:
       - name: build and push image
         run: |
           docker build \
-            -t ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:uat \
-            -t ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:${{ steps.pr.outputs.sha }} \
+            -t ${{ secrets.UAT_DOCKER_USERNAME }}/application:uat \
+            -t ${{ secrets.UAT_DOCKER_USERNAME }}/application:${{ steps.pr.outputs.sha }} \
             .
-          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:uat
-          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:${{ steps.pr.outputs.sha }}
+          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/application:uat
+          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/application:${{ steps.pr.outputs.sha }}
