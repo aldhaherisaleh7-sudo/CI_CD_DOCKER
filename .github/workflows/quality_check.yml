@@ -23,6 +23,9 @@ jobs:
           DB_USERNAME_ROOT: ${{ secrets.QA_DB_USERNAME_ROOT }} 
           DB_PASSWORD_ROOT: ${{ secrets.QA_DB_PASSWORD_ROOT }} 
 
+      - name: copy env
+        run: cp .env.example .env
+        
       - name: generate app key
         run:  docker exec application php artisan key:generate
         
