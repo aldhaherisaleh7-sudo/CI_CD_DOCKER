@@ -23,9 +23,8 @@ jobs:
           DB_HOST: ${{ secrets.QA_DB_HOST }}
           DB_PORT: ${{ secrets.QA_DB_PORT }}
           DB_DATABASE: ${{ secrets.QA_DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.QA_DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.QA_DB_PASSWORD }}
-          NGINX_HOST: ${{ secrets.QA_NGINX_HOST }}
+          DB_USERNAME_ROOT: ${{ secrets.QA_DB_USERNAME_ROOT }}
+          DB_PASSWORD_ROOT: ${{ secrets.QA_DB_PASSWORD_ROOT }}
 
       - name: generate app key
         run:  docker exec application php artisan key:generate
