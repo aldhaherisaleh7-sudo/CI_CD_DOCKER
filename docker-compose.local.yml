@@ -1,9 +1,7 @@
 services:
   app:
     container_name: application
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: uat-application:latest
     environment:
       - DB_CONNECTION=${DB_CONNECTION}
       - DB_HOST=${DB_HOST}
