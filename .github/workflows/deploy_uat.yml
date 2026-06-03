@@ -26,4 +26,4 @@ jobs:
             -t ${{ secrets.UAT_DOCKER_USERNAME }}/application:${{ github.sha }} \
             .
           docker push ${{ secrets.UAT_DOCKER_USERNAME }}/application:uat
-          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/aplication:${{ github.sha }}
+          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/application:${{ github.sha }}
