@@ -1,17 +1,30 @@
 name: UAT
-
 on:
   issue_comment:
     types: [created]
-    
-jobs:
-  registery:
-    if: contains(github.event.comment.body, 'deploy uat')
-    runs-on: ubuntu-latest
 
+jobs:
+  build-and-push:
+    if: contains(github.event.comment.body, 'deploy uat') && github.event.issue.pull_request != null
+    runs-on: ubuntu-latest
     steps:
-      - name: checkout
+      - name: get PR branch
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+            core.setOutput('sha', pr.data.head.sha);
+            core.setOutput('branch', pr.data.head.ref);
+
+      - name: checkout PR branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.sha }}
 
       - name: login to docker hub
         uses: docker/login-action@v3
@@ -21,9 +34,9 @@ jobs:
 
       - name: build and push image
         run: |
-          docker build \
-            -t ${{ secrets.UAT_DOCKER_USERNAME }}/application:uat \
-            -t ${{ secrets.UAT_DOCKER_USERNAME }}/application:${{ github.sha }} \
+          docker build -f Dockerfile.prod \
+            -t ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:uat \
+            -t ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:${{ steps.pr.outputs.sha }} \
             .
-          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/application:uat
-          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/application:${{ github.sha }}
+          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:uat
+          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/myapp:${{ steps.pr.outputs.sha }}
