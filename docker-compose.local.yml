@@ -1,0 +1,63 @@
+services:
+  app:
+    container_name: application
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - DB_CONNECTION=${DB_CONNECTION}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - public:/my-app/public:rw
+      - storage:/my-app/storage:rw
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    ports:
+      - "9119:80"
+    environment:
+      - NGINX_HOST=${NGINX_HOST:-localhost}
+    volumes:
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template
+      - public:/my-app/public:ro
+      - storage:/my-app/storage:ro
+    depends_on:
+      - app
+    networks:
+      - app-network
+
+  db:
+    container_name: mysql
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD_ROOT}
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MySQL_USERNAME=${DB_USERNAME}
+      - MYSQL_DATABASE_PASSWORD=${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -P 3306 --protocol=TCP -usaleh -ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  db:
+  storage:
+  public:
