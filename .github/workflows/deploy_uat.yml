@@ -57,10 +57,6 @@ jobs:
                 docker compose pull
                 docker compose up -d
                 
-                # Wait for MySQL healthcheck to pass instead of fixed sleep
-                echo "⏳ Waiting for containers to be healthy..."
-                timeout 60 bash -c 'until [ "$(docker inspect --format="{{.State.Health.Status}}" mysql)" = "healthy" ]; do sleep 2; done'
-                
                 docker compose ps
                 
                 if [ "$(docker compose ps --status running | grep -c 'running')" -lt 3 ]; then
