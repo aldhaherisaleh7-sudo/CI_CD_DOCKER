@@ -1,0 +1,29 @@
+name: UAT
+
+on:
+  issue_comment:
+    types: [created]
+    
+jobs:
+  registery:
+    if: contains(github.event.comment.body, 'deploy uat')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: login to docker hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.UAT_DOCKER_USERNAME }}
+          password: ${{ secrets.UAT_DOCKER_TOKEN }}
+
+      - name: build and push image
+        run: |
+          docker build \
+            -t ${{ secrets.UAT_DOCKER_USERNAME }}/application:uat \
+            -t ${{ secrets.UAT_DOCKER_USERNAME }}/application:${{ github.sha }} \
+            .
+          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/application:uat
+          docker push ${{ secrets.UAT_DOCKER_USERNAME }}/aplication:${{ github.sha }}
