@@ -7,5 +7,5 @@ Route::get('/', function () {
 });
 
 Route::get('/saleh', function () {
-    return "welcome this is me saleh";
+    return 'welcome this is me saleh';
 });
