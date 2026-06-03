@@ -1,7 +1,7 @@
 services:
   app:
     container_name: application
-    image: uat-application:latest
+    image: application:uat
     environment:
       - DB_CONNECTION=${DB_CONNECTION}
       - DB_HOST=${DB_HOST}
