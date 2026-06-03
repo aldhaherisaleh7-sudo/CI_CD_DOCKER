@@ -19,6 +19,7 @@ services:
         condition: service_healthy
     networks:
       - app-network
+
   db:
     container_name: mysql
     image: mysql:latest
@@ -26,7 +27,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD_ROOT}
       - MYSQL_DATABASE=${DB_DATABASE}
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -P 3306 --protocol=TCP -usaleh -ppassword"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -P 3306 --protocol=TCP -uroot -p${DB_PASSWORD_ROOT}"]
       interval: 10s
       timeout: 5s
       retries: 5
