@@ -56,7 +56,7 @@ jobs:
               cd /var/www/application
               docker compose pull
               docker compose up -d
-              sleep 300
+              sleep 120
               docker compose ps
               if [ "$(docker compose ps --status running | grep -c 'running')" -lt 3 ]; then
                 echo "❌ Not all containers are running!"
