@@ -53,15 +53,21 @@ jobs:
             username: ${{ secrets.UAT_EC2_USERNAME }}
             key: ${{ secrets.UAT_EC2_SSH_KEY }}
             script: |
-              cd /var/www/application
-              docker compose pull
-              docker compose up -d
-              sleep 120
-              docker compose ps
-              if [ "$(docker compose ps --status running | grep -c 'running')" -lt 3 ]; then
-                echo "❌ Not all containers are running!"
-                docker compose logs --tail=50
-                exit 1
-              fi
-              echo "✅ All containers are up and running (3.107.49.19)" 
+                cd /var/www/application
+                docker compose pull
+                docker compose up -d
+                
+                # Wait for MySQL healthcheck to pass instead of fixed sleep
+                echo "⏳ Waiting for containers to be healthy..."
+                timeout 60 bash -c 'until [ "$(docker inspect --format="{{.State.Health.Status}}" mysql)" = "healthy" ]; do sleep 2; done'
+                
+                docker compose ps
+                
+                if [ "$(docker compose ps --status running | grep -c 'running')" -lt 3 ]; then
+                  echo "❌ Not all containers are running!"
+                  docker compose logs --tail=50
+                  exit 1
+                fi
+                
+                echo "✅ All containers are up and running (3.107.49.19)"
                     
