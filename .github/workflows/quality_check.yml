@@ -12,23 +12,7 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
-
-      - name: make env file
-        run:  cp .env.example .env
-      - name: debug env
-        run: |
-          echo "DB_CONNECTION=$DB_CONNECTION"
-          echo "DB_HOST=$DB_HOST"
-          echo "DB_DATABASE=$DB_DATABASE"
-          echo "DB_PASSWORD_ROOT is set: $([[ -n $DB_PASSWORD_ROOT ]] && echo YES || echo NO)"
-          echo "DB_USERNAME_ROOT is set: $([[ -n $DB_USERNAME_ROOT ]] && echo YES || echo NO)"
-        env:
-          DB_CONNECTION: ${{ secrets.QA_DB_CONNECTION }}
-          DB_HOST: ${{ secrets.QA_DB_HOST }}
-          DB_DATABASE: ${{ secrets.QA_DB_DATABASE }}
-          DB_PASSWORD_ROOT: ${{ secrets.QA_DB_PASSWORD_ROOT }}
-          DB_USERNAME_ROOT: ${{ secrets.QA_DB_USERNAME_ROOT }}
-          
+      
       - name: spin container
         run: docker compose -f docker-compose.ci.yml up -d
         env:
