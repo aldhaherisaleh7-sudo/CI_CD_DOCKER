@@ -2,13 +2,8 @@ services:
   app:
     container_name: application
     image: application:uat
-    environment:
-      - DB_CONNECTION=${DB_CONNECTION}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_DATABASE=${DB_DATABASE}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - public:/my-app/public:rw
       - storage:/my-app/storage:rw
@@ -23,6 +18,8 @@ services:
     image: nginx:alpine
     ports:
       - "80:80"
+    env_file:
+      - .env
     environment:
       - NGINX_HOST=${NGINX_HOST:-localhost}
     volumes:
@@ -37,11 +34,13 @@ services:
   db:
     container_name: mysql
     image: mysql:latest
+    env_file:
+      - .env
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD_ROOT}
       - MYSQL_DATABASE=${DB_DATABASE}
-      - MySQL_USERNAME=${DB_USERNAME}
-      - MYSQL_DATABASE_PASSWORD=${DB_PASSWORD}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -P 3306 --protocol=TCP -usaleh -ppassword"]
       interval: 10s
