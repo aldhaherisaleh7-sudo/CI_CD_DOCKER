@@ -60,6 +60,9 @@ jobs:
                 sleep 120
                 docker compose ps
   comment:
+     permissions:
+        issues: write       
+        pull-requests: write
      runs-on: ubuntu-latest
      name: comment
      needs: deploy
